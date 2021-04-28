@@ -1,0 +1,59 @@
+- hosts: webserver
+  tasks:
+    - name: "Instalar MySQL"
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+        name: ["mysql-server-5.7", "python3-pymysql"]
+        state: latest
+      become: yes
+    
+    - name: "Garantir serviço MySQL rodando"
+      service:
+        name: mysql
+        state: started
+        enabled: True
+      become: yes
+      
+    - name: "Alterar a senha do root MySQL"
+      mysql_user:
+        name: root
+        host: "{{ item }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        password: "teste123456"
+        priv: '*.*:ALL,GRANT'
+        check_implicit_admin: true
+      loop: ["10.80.4.12", "127.0.0.1", "::1", "localhost"]
+      become: yes
+      notify:
+        - restart mysql
+
+    - name: "Criar arquivo de credenciais do root"
+      template:
+        src:  my.cnf.j2
+        dest: /root/.my.cnf
+        owner: root
+        mode: 0600
+      become: yes
+      notify:
+        - restart mysql
+
+    - name: "Criar usuário banco de dados"
+      mysql_user: 
+        login_user: root
+        login_password: "teste123456"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        name: "userTeste"
+        password: "test1e23456!"
+        priv: "*.*:ALL"
+        host: "%"
+        state: present
+
+    - name: "Configurar MySQL para aceitar conexões remotas"
+      copy:
+        src: "files/mysqld.cnf"
+        dest: "/etc/mysql/mysql.conf.d/mysqld.cnf"
+      become: yes
+      run_once: true
+      notify:
+        - restart mysql
