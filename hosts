@@ -1,7 +1,10 @@
-[webserver]
+[mysqlserver]
 10.0.2.14
 
-[webserver:vars]
+[app:children]
+mysqlserver
+
+[app:vars]
 ansible_user=testadmin
 ansible_python_interpreter=/usr/bin/python3
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
