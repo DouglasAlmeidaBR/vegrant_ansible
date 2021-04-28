@@ -18,7 +18,7 @@
     - name: "Alterar a senha do root MySQL"
       mysql_user:
         name: root
-        host: "{{ item }}"
+        host: "%"
         login_unix_socket: /var/run/mysqld/mysqld.sock
         password: "teste123456"
         priv: '*.*:ALL,GRANT'
@@ -57,3 +57,10 @@
       run_once: true
       notify:
         - restart mysql
+        
+ handlers:
+    - name: restart mysql
+      service:
+        name: mysql
+        state: restarted
+      become: yes
