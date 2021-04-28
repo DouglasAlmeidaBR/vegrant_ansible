@@ -1,11 +1,7 @@
 [webserver]
 10.0.2.14
 
-[app:webserver]
-mysqlserver
-
-[app:vars]
-ansible_user=vagrant
-ansible_ssh_private_key_file=/home/vagrant/id_bionic
+[webserver:vars]
+ansible_user=testadmin
 ansible_python_interpreter=/usr/bin/python3
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
