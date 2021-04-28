@@ -30,8 +30,8 @@
 
     - name: "Criar arquivo de credenciais do root"
       template:
-        src:  my.cnf.j2
-        dest: /root/.my.cnf
+        src:  templates/my.cnf.j2
+        dest: /root/.my.cnf"
         owner: root
         mode: 0600
       become: yes
