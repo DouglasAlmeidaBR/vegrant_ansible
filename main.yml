@@ -1,5 +1,5 @@
 ---
-- hosts: webserver
+- hosts: mysqlserver
   tasks:
     - name: "Instalar MySQL"
       apt:
@@ -44,36 +44,16 @@
         login_user: root
         login_password: "teste123456"
         login_unix_socket: /var/run/mysqld/mysqld.sock
-        name: "petclinic"
-        password: "petclinic"
+        name: "testeUser"
+        password: "testeUser"
         priv: "*.*:ALL"
         host: "%"
         state: present
 
-    - name: "Criar banco de dados"
-      mysql_db:
-        login_user: root
-        login_password: "teste123456"
-        login_unix_socket: /var/run/mysqld/mysqld.sock
-        name: "petclinic"
-        state: present
-      become: yes
-
-    - name: "Verificar banco"
-      community.mysql.mysql_query:
-        login_user: root
-        login_password: "teste123456"
-        login_unix_socket: /var/run/mysqld/mysqld.sock
-        login_db: "petclinic"
-        query: "SELECT * FROM vets"
-      register: verificar_banco
-      changed_when: false
-      ignore_errors: true
-
     - name: "Configurar MySQL para aceitar conexões remotas"
       copy:
-        src: files/mysqld.cnf
-        dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+        src: "files/mysqld.cnf"
+        dest: "/etc/mysql/mysql.conf.d/mysqld.cnf"
       become: yes
       run_once: true
       notify:
