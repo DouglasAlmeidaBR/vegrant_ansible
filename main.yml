@@ -1,4 +1,4 @@
-- hosts: webserver
+- hosts: all
   tasks:
     - name: "Instalar MySQL"
       apt:
